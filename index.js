@@ -10,44 +10,44 @@ app.use((req, res, next) => {
     next();
 });
 
-let books = [];
+let shoes = [];
 
-app.get("/books", (req, res) => {
-    res.json(books);
+app.get("/shoes", (req, res) => {
+    res.json(shoes);
 });
 
-app.post("/books", (req, res) => {
-    const newBook = {
+app.post("/shoes", (req, res) => {
+    const newShoe = {
         id: Date.now().toString(),
-        title: req.body.title,
-        author: req.body.author,
-        description: req.body.description,
+        menShoes: req.body.menShoes,
+        ladiesShoes: req.body.ladiesShoes,
+        kidsShoes: req.body.kidsShoes,
     };
-    books.push(newBook);
-    res.status(201).json(newBook);
+    shoes.push(newShoe);
+    res.status(201).json(newShoe);
 });
 
-app.put("/books/:id", (req, res) => {
+app.put("/shoes/:id", (req, res) => {
     const id = req.params.id;
-    const index = books.findIndex((book) => book.id === id);
+    const index = shoes.findIndex((shoe) => shoe.id === id);
 
     if (index !== -1) {
-        books[index] = {
+        shoes[index] = {
             id: id,
-            title: req.body.title,
-            author: req.body.author,
-            description: req.body.description,
+            menShoes: req.body.menShoes,
+            ladiesShoes: req.body.ladiesShoes,
+            kidsShoes: req.body.kidsShoes,
         };
-        res.json(books[index]);
+        res.json(shoes[index]);
     } else {
-        res.status(404).json({ message: "Book not found" });
+        res.status(404).json({ message: "Shoe store entry not found" });
     }
 });
 
-app.delete("/books/:id", (req, res) => {
+app.delete("/shoes/:id", (req, res) => {
     const id = req.params.id;
-    books = books.filter((book) => book.id !== id);
-    res.json({ message: "Book deleted" });
+    shoes = shoes.filter((shoe) => shoe.id !== id);
+    res.json({ message: "Shoe store entry deleted" });
 });
 
 app.listen(port, () => {
