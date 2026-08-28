@@ -1,6 +1,9 @@
-const express = require("express");
-const app = express();
+require("dotenv").config(); // Must be at the very top
 
+const express = require("express");
+const mongoose = require("mongoose");
+
+const app = express();
 const port = 3000;
 
 app.use(express.json());
@@ -10,44 +13,57 @@ app.use((req, res, next) => {
     next();
 });
 
-let books = [];
+// Replace with your actual string from Atlas:
+const mongoURI = process.env.MONGO_URI;
 
-app.get("/books", (req, res) => {
-    res.json(books);
+// MongoDB Connection
+mongoose
+    .connect(mongoURI)
+    .then(() => console.log("Connected to MongoDB Atlas"))
+    .catch((err) => console.log("MongoDB connection error:", err));
+
+// Book Schema & Model
+const bookSchema = new mongoose.Schema({
+    title: String,
+    author: String,
+    description: String,
 });
 
-app.post("/books", (req, res) => {
-    const newBook = {
-        id: Date.now().toString(),
-        title: req.body.title,
-        author: req.body.author,
-        description: req.body.description,
-    };
-    books.push(newBook);
-    res.status(201).json(newBook);
-});
+const Book = mongoose.model("Book", bookSchema);
 
-app.put("/books/:id", (req, res) => {
-    const id = req.params.id;
-    const index = books.findIndex((book) => book.id === id);
-
-    if (index !== -1) {
-        books[index] = {
-            id: id,
-            title: req.body.title,
-            author: req.body.author,
-            description: req.body.description,
-        };
-        res.json(books[index]);
-    } else {
-        res.status(404).json({ message: "Book not found" });
+// Get all books
+app.get("/books", async (req, res) => {
+    try {
+        const books = await Book.find();
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 
-app.delete("/books/:id", (req, res) => {
-    const id = req.params.id;
-    books = books.filter((book) => book.id !== id);
-    res.json({ message: "Book deleted" });
+// Get book(s) by author parameter
+app.get("/books/author/:author", async (req, res) => {
+    try {
+        const books = await Book.find({ author: req.params.author });
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Add a new book
+app.post("/books", async (req, res) => {
+    try {
+        const newBook = new Book({
+            title: req.body.title,
+            author: req.body.author,
+            description: req.body.description,
+        });
+        const savedBook = await newBook.save();
+        res.status(201).json(savedBook);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
 app.listen(port, () => {
