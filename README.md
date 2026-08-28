@@ -1,21 +1,17 @@
 # Screenshot of work (Express Week 2 Exercise)
 
-## Code
-
-![Screenshot of work](./screenshots/screenshot-5.png)
-
 ## GET request
 
-![Screenshot of work](./screenshots/screenshot-1.png)
+![Screenshot of work](./screenshots/get-request.png)
 
 ## POST request
 
-![Screenshot of work](./screenshots/screenshot-2.png)
+![Screenshot of work](./screenshots/post-request.png)
 
-## PUT request
+## PUT request that returns 404
 
-![Screenshot of work](./screenshots/screenshot-3.png)
+![Screenshot of work](./screenshots/put-request-with-404.png)
 
 ## DELETE request
 
-![Screenshot of work](./screenshots/screenshot-4.png)
+![Screenshot of work](./screenshots/delete-request.png)
