@@ -1,4 +1,4 @@
-# Screenshot of work (Express Week 2 Exercise)
+# Screenshot of work (Node & Express Week 4 Exercise)
 
 ## GET request
 
