@@ -1,4 +1,4 @@
-# Screenshot of work (Node & Express Week 8 Exercise)
+# Screenshot of work (Node & Express Week 8 Assignment)
 
 ## GET request (all accounts)
 
