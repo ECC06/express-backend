@@ -1,6 +1,9 @@
-const express = require("express");
-const app = express();
+require("dotenv").config();
 
+const express = require("express");
+const mongoose = require("mongoose");
+
+const app = express();
 const port = 3000;
 
 app.use(express.json());
@@ -10,46 +13,56 @@ app.use((req, res, next) => {
     next();
 });
 
-let shoes = [];
+// MongoDB Connection
+mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => console.log("Connected to MongoDB Atlas"))
+    .catch((err) => console.log("MongoDB connection error:", err));
 
-app.get("/shoes", (req, res) => {
-    res.json(shoes);
+// Shoe Store Schema & Model
+const shoeSchema = new mongoose.Schema({
+    brand: String,
+    sizeEU: String,
+    price: String,
 });
 
-app.post("/shoes", (req, res) => {
-    const newShoe = {
-        id: Date.now().toString(),
-        menShoes: req.body.menShoes,
-        ladiesShoes: req.body.ladiesShoes,
-        kidsShoes: req.body.kidsShoes,
-    };
-    shoes.push(newShoe);
-    res.status(201).json(newShoe);
-});
+const Shoe = mongoose.model("Shoe", shoeSchema);
 
-app.put("/shoes/:id", (req, res) => {
-    const id = req.params.id;
-    const index = shoes.findIndex((shoe) => shoe.id === id);
-
-    if (index !== -1) {
-        shoes[index] = {
-            id: id,
-            menShoes: req.body.menShoes,
-            ladiesShoes: req.body.ladiesShoes,
-            kidsShoes: req.body.kidsShoes,
-        };
-        res.json(shoes[index]);
-    } else {
-        res.status(404).json({ message: "Shoe store entry not found" });
+// GET all shoe entries
+app.get("/shoes", async (req, res) => {
+    try {
+        const shoes = await Shoe.find();
+        res.json(shoes);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 
-app.delete("/shoes/:id", (req, res) => {
-    const id = req.params.id;
-    shoes = shoes.filter((shoe) => shoe.id !== id);
-    res.json({ message: "Shoe store entry deleted" });
+// GET shoe entry by menShoes param
+app.get("/shoes/brand/:brand", async (req, res) => {
+    try {
+        const shoes = await Shoe.find({ menShoes: req.params.brand });
+        res.json(shoes);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// POST a new shoe entry
+app.post("/shoes", async (req, res) => {
+    try {
+        const newShoe = new Shoe({
+            brand: req.body.brand,
+            sizeEU: req.body.sizeEU,
+            price: req.body.price,
+        });
+        const savedShoe = await newShoe.save();
+        res.status(201).json(savedShoe);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}\n`);
+    console.log(`Server listening on port ${port}`);
 });

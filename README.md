@@ -7,11 +7,3 @@
 ## POST request
 
 ![Screenshot of work](./screenshots/post-request.png)
-
-## PUT request that returns 404
-
-![Screenshot of work](./screenshots/put-request.png)
-
-## DELETE request
-
-![Screenshot of work](./screenshots/delete-request.png)
