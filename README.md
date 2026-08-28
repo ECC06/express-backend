@@ -4,10 +4,14 @@
 
 ![Screenshot of work](./screenshots/get-request.png)
 
-## POST request body (valid)
+## Account created
 
-![Screenshot of work](./screenshots/valid-data.png)
+![Screenshot of work](./screenshots/account-created.png)
 
-## POST request body (invalid)
+## Account Number Exists
 
-![Screenshot of work](./screenshots/invalid-data.png)
+![Screenshot of work](./screenshots/account-number-exists.png)
+
+## Invalid Number
+
+![Screenshot of work](./screenshots/invalid-number.png)

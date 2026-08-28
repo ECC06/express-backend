@@ -13,18 +13,37 @@ app.get("/accounts", (req, res) => {
 app.post(
     "/accounts",
     [
-        body("branch").notEmpty(),
-        body("location").notEmpty(),
-        body("address").notEmpty(),
+        body("name").notEmpty(),
         body("accountNumber")
-            .isNumeric()
-            .isLength({ min: 10, max: 10 })
+            .notEmpty()
             .custom((value) => {
                 const exists = accounts.find(
                     (acc) => acc.accountNumber === value,
                 );
                 if (exists) {
                     throw new Error("Account number already exists");
+                }
+                return true;
+            }),
+        body("phoneNumber")
+            .notEmpty()
+            .custom((value) => {
+                const exists = accounts.find(
+                    (acc) => acc.phoneNumber === value,
+                );
+                if (exists) {
+                    throw new Error("Phone number already exists");
+                }
+                return true;
+            })
+            .custom((value) => {
+                const ghanaRegex = /^(?:\+233|0)\d{9}$/;
+                const nigeriaRegex = /^(?:\+234|0)\d{10}$/;
+
+                if (!ghanaRegex.test(value) && !nigeriaRegex.test(value)) {
+                    throw new Error(
+                        "Phone number must be a valid Ghana or Nigeria number",
+                    );
                 }
                 return true;
             }),
@@ -36,14 +55,13 @@ app.post(
         }
 
         const newAccount = {
-            branch: req.body.branch,
-            location: req.body.location,
-            address: req.body.address,
+            name: req.body.name,
+            phoneNumber: req.body.phoneNumber,
             accountNumber: req.body.accountNumber,
         };
 
         accounts.push(newAccount);
-        console.log(accounts);
+
         res.status(201).json({
             message: "Account created successfully",
             account: newAccount,
@@ -52,5 +70,5 @@ app.post(
 );
 
 app.listen(3000, () => {
-    console.log("listening on port 3000");
+    console.log("Server running on port 3000");
 });
