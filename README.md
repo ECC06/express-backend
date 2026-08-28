@@ -1,17 +1,13 @@
-# Screenshot of work (Node & Express Week 6 Exercise)
+# Screenshot of work (Node & Express Week 8 Exercise)
 
-## GET request (all books)
+## GET request (all accounts)
 
 ![Screenshot of work](./screenshots/get-request.png)
 
-## GET request (author)
+## POST request body (valid)
 
-![Screenshot of work](./screenshots/get-request-author.png)
+![Screenshot of work](./screenshots/valid-data.png)
 
-## DB Schema
+## POST request body (invalid)
 
-![Screenshot of work](./screenshots/db-schema.png)
-
-## POST request
-
-![Screenshot of work](./screenshots/post-request.png)
+![Screenshot of work](./screenshots/invalid-data.png)
