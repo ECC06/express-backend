@@ -2,11 +2,11 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -15,135 +15,115 @@ app.use((req, res, next) => {
     next();
 });
 
-const mongoURI = process.env.MONGO_URI;
-
+// MongoDB Connection
 mongoose
-    .connect(mongoURI)
+    .connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch((err) => console.log("MongoDB connection error:", err));
 
-const bookSchema = new mongoose.Schema({
-    title: String,
-    author: String,
-    description: String,
-});
-
-const Book = mongoose.model("Book", bookSchema);
-
+// User Schema & Model
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);
 
-app.get("/books", async (req, res) => {
-    try {
-        const books = await Book.find();
-        res.json(books);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+// JWT Middleware Authentication
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]; // Format: "Bearer TOKEN"
 
-app.get("/books/author/:author", async (req, res) => {
-    try {
-        const books = await Book.find({ author: req.params.author });
-        res.json(books);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    if (!token) {
+        return res.status(401).json({ message: "Access token missing" });
     }
-});
 
-app.post("/books", async (req, res) => {
+    jwt.verify(
+        token,
+        process.env.JWT_SECRET || "fallbacksecret",
+        (err, user) => {
+            if (err) {
+                return res
+                    .status(403)
+                    .json({ message: "Invalid or expired token" });
+            }
+            req.user = user;
+            next();
+        },
+    );
+};
+
+// 1. Sign-Up Route
+app.post("/signup", async (req, res) => {
     try {
-        const newBook = new Book({
-            title: req.body.title,
-            author: req.body.author,
-            description: req.body.description,
+        const { username, password } = req.body;
+
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ message: "Username already exists" });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({
+            username,
+            password: hashedPassword,
         });
-        const savedBook = await newBook.save();
-        res.status(201).json(savedBook);
+
+        await newUser.save();
+        res.status(201).json({ message: "User registered successfully" });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
-app.post(
-    "/register",
-    [
-        body("username").trim().notEmpty().withMessage("Username is required").isLength({ min: 3, max: 20 }).withMessage("Username must be between 3 and 20 characters"),
-        body("password").notEmpty().withMessage("Password is required").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
-    ],
-    async (req, res) => {
-        const errors = validationResult(req);
+// 2. Sign-In Route
+app.post("/signin", async (req, res) => {
+    try {
+        const { username, password } = req.body;
 
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res
+                .status(400)
+                .json({ message: "Invalid username or password" });
         }
 
-        try {
-            const existingUser = await User.findOne({ username: req.body.username });
-
-            if (existingUser) {
-                return res.status(400).json({ message: "Username already exists" });
-            }
-
-            const passwordHash = await bcrypt.hash(req.body.password, 10);
-            const user = new User({
-                username: req.body.username,
-                password: passwordHash,
-            });
-
-            await user.save();
-            res.status(201).json({ message: "User registered successfully" });
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+        // Compare passwords
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res
+                .status(400)
+                .json({ message: "Invalid username or password" });
         }
+
+        // Generate JWT
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_SECRET || "fallbacksecret",
+            { expiresIn: "1h" },
+        );
+
+        res.json({ message: "Sign-in successful", token });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-);
+});
 
-app.post(
-    "/login",
-    [
-        body("username").trim().notEmpty().withMessage("Username is required"),
-        body("password").notEmpty().withMessage("Password is required"),
-    ],
-    async (req, res) => {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+// 3. Protected Profile Route
+app.get("/profile", authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-
-        try {
-            const user = await User.findOne({ username: req.body.username });
-
-            if (!user) {
-                return res.status(400).json({ message: "Invalid username or password" });
-            }
-
-            const isMatch = await bcrypt.compare(req.body.password, user.password);
-
-            if (!isMatch) {
-                return res.status(400).json({ message: "Invalid username or password" });
-            }
-
-            res.json({ message: "Login successful" });
-        } catch (err) {
-            res.status(500).json({ message: err.message });
-        }
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-);
+});
 
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}\n`);
+    console.log(`Server listening on port ${port}`);
 });

@@ -1,17 +1,17 @@
-# Screenshot of work (Node & Express Validation: Week 9 Exercise)
+# Screenshot of work (Node & Express Auth with JWT: Week 10 Assignment)
 
-## Sign up (successful)
+## Registration (successful)
 
-![Screenshot of work](./screenshots/registration-success.png)
+![Screenshot of work](./screenshots/registered-successfully.png)
 
-## Sign up (failed)
+## Username exists
 
-![Screenshot of work](./screenshots/registration-failed.png)
+![Screenshot of work](./screenshots/username-exists.png)
 
 ## Sign in (successful)
 
-![Screenshot of work](./screenshots/login-successful.png)
+![Screenshot of work](./screenshots/sign-in-successful.png)
 
 ## Sign in (unsuccessful)
 
-![Screenshot of work](./screenshots/login-unsuccessful.png)
+![Screenshot of work](./screenshots/sign-in-unsuccessful.png)
