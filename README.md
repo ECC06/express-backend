@@ -1,17 +1,17 @@
-# Screenshot of work (Node & Express Week 6 Exercise)
+# Screenshot of work (Node & Express Validation: Week 9 Exercise)
 
-## GET request (all books)
+## Sign up (successful)
 
-![Screenshot of work](./screenshots/get-request.png)
+![Screenshot of work](./screenshots/registration-success.png)
 
-## GET request (author)
+## Sign up (failed)
 
-![Screenshot of work](./screenshots/get-request-author.png)
+![Screenshot of work](./screenshots/registration-failed.png)
 
-## DB Schema
+## Sign in (successful)
 
-![Screenshot of work](./screenshots/db-schema.png)
+![Screenshot of work](./screenshots/login-successful.png)
 
-## POST request
+## Sign in (unsuccessful)
 
-![Screenshot of work](./screenshots/post-request.png)
+![Screenshot of work](./screenshots/login-unsuccessful.png)
