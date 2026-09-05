@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -80,8 +80,17 @@ app.post("/books", async (req, res) => {
 app.post(
     "/register",
     [
-        body("username").trim().notEmpty().withMessage("Username is required").isLength({ min: 3, max: 20 }).withMessage("Username must be between 3 and 20 characters"),
-        body("password").notEmpty().withMessage("Password is required").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+        body("username")
+            .trim()
+            .notEmpty()
+            .withMessage("Username is required")
+            .isLength({ min: 3, max: 20 })
+            .withMessage("Username must be between 3 and 20 characters"),
+        body("password")
+            .notEmpty()
+            .withMessage("Password is required")
+            .isLength({ min: 6 })
+            .withMessage("Password must be at least 6 characters long"),
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -91,10 +100,14 @@ app.post(
         }
 
         try {
-            const existingUser = await User.findOne({ username: req.body.username });
+            const existingUser = await User.findOne({
+                username: req.body.username,
+            });
 
             if (existingUser) {
-                return res.status(400).json({ message: "Username already exists" });
+                return res
+                    .status(400)
+                    .json({ message: "Username already exists" });
             }
 
             const passwordHash = await bcrypt.hash(req.body.password, 10);
@@ -108,7 +121,7 @@ app.post(
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    },
 );
 
 app.post(
@@ -128,20 +141,27 @@ app.post(
             const user = await User.findOne({ username: req.body.username });
 
             if (!user) {
-                return res.status(400).json({ message: "Invalid username or password" });
+                return res
+                    .status(400)
+                    .json({ message: "Invalid username or password" });
             }
 
-            const isMatch = await bcrypt.compare(req.body.password, user.password);
+            const isMatch = await bcrypt.compare(
+                req.body.password,
+                user.password,
+            );
 
             if (!isMatch) {
-                return res.status(400).json({ message: "Invalid username or password" });
+                return res
+                    .status(400)
+                    .json({ message: "Invalid username or password" });
             }
 
             res.json({ message: "Login successful" });
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    },
 );
 
 app.listen(port, () => {
