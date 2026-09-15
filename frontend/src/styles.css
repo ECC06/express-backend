@@ -1,0 +1,79 @@
+:root {
+    color: #27312d;
+    background: #f7f8f5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input, textarea { font: inherit; }
+button { border: 0; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.app-shell { min-height: 100vh; }
+.auth-shell { background: #f7f8f5; }
+.auth-page { align-items: center; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding: 2rem 1.5rem; }
+.auth-content { width: 100%; }
+.auth-content .page-intro, .auth-content .form-panel { margin-left: auto; margin-right: auto; }
+.auth-content .page-intro { margin-bottom: 1.5rem; text-align: center; }
+.auth-content h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); }
+.topbar {
+    align-items: center; background: #fff; border-bottom: 1px solid #e6e9e3;
+    display: flex; justify-content: space-between; padding: 1rem max(1.5rem, calc((100vw - 1120px) / 2));
+}
+.main-nav { display: flex; gap: .25rem; }
+.logout-button { background: #416b58 !important; color: #fff !important; margin-left: auto; }
+.logout-button:hover { background: #315442 !important; }
+.nav-link { background: transparent; border-radius: 7px; color: #69726d; padding: .6rem .8rem; }
+.nav-link:hover, .nav-link.active { background: #edf3ee; color: #315442; }
+.page { margin: 0 auto; max-width: 1120px; padding: 4rem 1.5rem 5rem; }
+.page-intro { margin-bottom: 2.25rem; max-width: 650px; }
+.eyebrow { color: #5a8067; font-size: .76rem; font-weight: 700; letter-spacing: .12em; margin: 0 0 .7rem; text-transform: uppercase; }
+h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.08; margin: 0 0 .8rem; }
+h2 { margin: 0 0 .5rem; }
+.page-intro > p:last-child { color: #6c756f; font-size: 1.05rem; line-height: 1.6; margin: 0; }
+.toolbar { align-items: center; display: flex; gap: .8rem; justify-content: space-between; margin-bottom: 2rem; }
+.toolbar button, .form-panel button { background: #416b58; border-radius: 7px; color: #fff; font-weight: 600; padding: .75rem 1.05rem; }
+.toolbar button:hover, .form-panel button:hover { background: #315442; }
+.search-form { display: flex; gap: .5rem; max-width: 390px; width: 100%; }
+.search-form input { flex: 1; }
+.button-secondary { background: #fff !important; border: 1px solid #cad6cc !important; color: #416b58 !important; }
+input, textarea { background: #fff; border: 1px solid #d8dfd9; border-radius: 7px; color: #27312d; display: block; margin-top: .45rem; outline-color: #719b7e; padding: .75rem .85rem; width: 100%; }
+textarea { min-height: 120px; resize: vertical; }
+label { color: #4d5951; display: block; font-size: .9rem; font-weight: 600; margin-bottom: 1.2rem; }
+.book-grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.book-card { background: #fff; border: 1px solid #e4e9e3; border-radius: 12px; display: flex; gap: 1rem; padding: 1.25rem; }
+.book-cover { align-items: center; background: #dce9de; border-radius: 7px; color: #416b58; display: flex; flex: 0 0 54px; font-size: 1.7rem; font-weight: 700; height: 75px; justify-content: center; }
+.book-card h2 { font-size: 1.18rem; }
+.book-author { color: #5a8067; font-size: .9rem; font-weight: 700; margin: 0 0 .7rem; }
+.book-description { color: #778079; font-size: .9rem; line-height: 1.5; margin: 0; }
+.empty-state { background: #fff; border: 1px dashed #cbd8cd; border-radius: 12px; padding: 4rem 1rem; text-align: center; }
+.empty-icon { color: #72977c; font-size: 2rem; }
+.empty-state p { color: #778079; }
+.form-panel { background: #fff; border: 1px solid #e4e9e3; border-radius: 12px; padding: 2rem; }
+.narrow { max-width: 600px; }
+.auth-panel { max-width: 480px; }
+.auth-switch { color: #778079; font-size: .9rem; margin: 1.5rem 0 0; text-align: center; }
+.text-link { background: none; color: #416b58; font-weight: 700; padding: 0; text-decoration: underline; }
+.notice { border-radius: 7px; margin: 1.5rem auto -1.5rem; max-width: 1120px; padding: .8rem 1rem; }
+.page > .notice { margin: 0 auto 2rem; }
+.auth-page .notice { margin: 0 auto 1.5rem; max-width: 480px; }
+.success { background: #e3f1e6; color: #285b3b; }
+.error { background: #fae8e5; color: #9a392f; }
+footer { border-top: 1px solid #e6e9e3; color: #88918b; font-size: .85rem; padding: 1.5rem; text-align: center; }
+
+@media (max-width: 680px) {
+    .topbar { align-items: stretch; flex-direction: column; gap: .75rem; padding: .85rem 1rem; }
+    .main-nav { flex-wrap: wrap; gap: .35rem; }
+    .nav-link { flex: 1 1 auto; min-height: 44px; padding: .7rem .6rem; }
+    .logout-button { flex: 0 0 auto; margin-left: 0; width: 100%; }
+    .page { padding: 2.5rem 1rem 4rem; }
+    .page-intro { margin-bottom: 1.75rem; }
+    h1 { font-size: clamp(2rem, 10vw, 3rem); }
+    .toolbar { align-items: stretch; flex-direction: column; }
+    .search-form { max-width: none; }
+    .toolbar > button, .search-form button { min-height: 44px; }
+    .book-grid { grid-template-columns: 1fr; }
+    .book-card { padding: 1rem; }
+    .form-panel { padding: 1.25rem; }
+}
