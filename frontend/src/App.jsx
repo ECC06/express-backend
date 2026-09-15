@@ -4,7 +4,7 @@ import { LoginPage, RegisterPage } from "./components/AuthPage";
 import BrowsePage from "./components/BrowsePage";
 import Navigation from "./components/Navigation";
 
-const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, "");
+const API_URL = import.meta.env.VITE_API_URL;
 
 const pages = ["browse", "add", "register", "login"];
 
