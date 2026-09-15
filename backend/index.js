@@ -7,14 +7,15 @@ const { body, validationResult } = require("express-validator");
 
 const app = express();
 const port = process.env.PORT || 5000;
+const allowedUrl = process.env.FRONTEND_URL?.split(",").map((url) =>
+    url.trim().replace(/\/+$/, ""),
+);
 
 // Middleware
 app.use(express.json());
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL
-            ? process.env.FRONTEND_URL.split(",")
-            : "http://localhost:5173",
+        origin: allowedUrl,
         credentials: true,
     }),
 );
