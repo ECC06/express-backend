@@ -4,16 +4,33 @@ import { LoginPage, RegisterPage } from "./components/AuthPage";
 import BrowsePage from "./components/BrowsePage";
 import Navigation from "./components/Navigation";
 
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, "");
 
 const pages = ["browse", "add", "register", "login"];
 
 async function request(path, options = {}) {
+    if (!API_URL) {
+        throw new Error(
+            "The API URL is not configured. Set VITE_API_URL and restart the frontend.",
+        );
+    }
+
     const response = await fetch(`${API_URL}${path}`, {
         headers: { "Content-Type": "application/json" },
         ...options,
     });
-    const data = await response.json();
+    const responseText = await response.text();
+    let data = {};
+
+    if (responseText) {
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                `The server returned an invalid response (${response.status}).`,
+            );
+        }
+    }
 
     if (!response.ok) {
         throw new Error(
