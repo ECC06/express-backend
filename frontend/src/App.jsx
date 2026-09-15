@@ -4,7 +4,7 @@ import { LoginPage, RegisterPage } from "./components/AuthPage";
 import BrowsePage from "./components/BrowsePage";
 import Navigation from "./components/Navigation";
 
-const configuredApiUrl = import.meta.env.LOCAL_API_URL;
+const configuredApiUrl = import.meta.env.API_URL;
 
 const API_URL = configuredApiUrl.replace(/\/+$/, "").replace(/\/books$/, "");
 
