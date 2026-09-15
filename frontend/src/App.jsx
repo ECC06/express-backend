@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddBookPage from "./components/AddBookPage";
 import { LoginPage, RegisterPage } from "./components/AuthPage";
 import BrowsePage from "./components/BrowsePage";
 import Navigation from "./components/Navigation";
 
-const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000")
-    .replace(/\/+$/, "")
-    .replace(/\/books$/, "");
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+
+if (!configuredApiUrl) {
+    throw new Error(
+        "VITE_API_URL is not configured. Set it to the deployed API URL.",
+    );
+}
+
+const API_URL = configuredApiUrl.replace(/\/+$/, "").replace(/\/books$/, "");
 
 const pages = ["browse", "add", "register", "login"];
 
