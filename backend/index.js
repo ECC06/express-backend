@@ -6,9 +6,16 @@ const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 
 const app = express();
-const port = process.env.PORT || 5000;
-const allowedUrl = process.env.FRONTEND_URL?.split(",").map((url) =>
-    url.trim().replace(/\/+$/, ""),
+const port = process.env.PORT;
+const allowedUrl = process.env.FRONTEND_URL.split(",")
+    .map((url) => url.trim().replace(/\/+$/, ""))
+    .concat("http://localhost:5173");
+
+app.use(
+    cors({
+        origin: allowedUrl,
+        credentials: true,
+    }),
 );
 
 // Middleware
