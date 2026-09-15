@@ -6,12 +6,6 @@ import Navigation from "./components/Navigation";
 
 const configuredApiUrl = import.meta.env.VITE_API_URL;
 
-if (!configuredApiUrl) {
-    throw new Error(
-        "VITE_API_URL is not configured. Set it to the deployed API URL.",
-    );
-}
-
 const API_URL = configuredApiUrl.replace(/\/+$/, "").replace(/\/books$/, "");
 
 const pages = ["browse", "add", "register", "login"];
