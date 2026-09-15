@@ -7,25 +7,12 @@ const { body, validationResult } = require("express-validator");
 
 const app = express();
 const port = process.env.PORT;
-const allowedUrl = process.env.FRONTEND_URL.split(",")
-    .map((url) => url.trim().replace(/\/+$/, ""))
-    .concat("http://localhost:5173");
 
-app.use(
-    cors({
-        origin: allowedUrl,
-        credentials: true,
-    }),
-);
+app.use(cors());
 
 // Middleware
 app.use(express.json());
-app.use(
-    cors({
-        origin: allowedUrl,
-        credentials: true,
-    }),
-);
+app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
 mongoose
