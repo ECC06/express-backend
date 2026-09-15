@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const pages = ["browse", "add", "register", "login"];
 
 async function request(path, options = {}) {
@@ -149,13 +149,14 @@ function BrowsePage({ showNotice }) {
     const [author, setAuthor] = useState("");
     const [loaded, setLoaded] = useState(false);
 
-    const loadBooks = async (path = "/books", message) => {
+    const loadBooks = async (
+        path = "/books",
+        message = "Library refreshed.",
+    ) => {
         try {
             setBooks(await request(path));
             setLoaded(true);
-            if (message) {
-                showNotice("success", message);
-            }
+            showNotice("success", message);
         } catch (error) {
             showNotice("error", error.message);
         }
